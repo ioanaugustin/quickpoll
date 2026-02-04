@@ -40,8 +40,9 @@ service cloud.firestore {
 
     // Votes subcollection
     match /votes/{pollId}/votes/{voteId} {
-      // Users can read votes for a specific poll
-      allow read: if resource.data.pollId == pollId;
+      // Authenticated users can read their own vote document (even if it doesn't exist)
+      // This allows checking hasUserVoted() without permission errors
+      allow read: if isAuthenticated() && voteId == request.auth.uid;
 
       // Authenticated users can vote once per poll
       // The voteId MUST be their auth.uid to prevent duplicates

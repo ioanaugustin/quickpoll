@@ -1,0 +1,146 @@
+<div class="results-container">
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading results...</p>
+    </div>
+  }
+
+
+  @else if (error()) {
+    <div class="error-container">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <h2>Oops!</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="onBack()">
+        <mat-icon>home</mat-icon>
+        Go Home
+      </button>
+    </div>
+  }
+
+
+  @else if (poll()) {
+  
+    <mat-toolbar color="primary" class="results-toolbar">
+      <button mat-icon-button (click)="onBack()" aria-label="Go back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="toolbar-spacer"></span>
+      <button mat-icon-button (click)="onShareNative()" aria-label="Share poll">
+        <mat-icon>share</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="results-content">
+    
+      @if (isNewPoll()) {
+        <div class="success-banner">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <strong>Poll created successfully!</strong>
+            <p>Share it with your friends to get votes</p>
+          </div>
+        </div>
+      }
+
+    
+      <div class="poll-header">
+        <h1 class="poll-title">{{ poll()!.title }}</h1>
+        <p class="poll-meta">
+          <span>Created {{ getRelativeTime(poll()!.createdAt) }}</span>
+          <span class="separator">•</span>
+          <span class="total-votes">
+            {{ poll()!.totalVotes }} {{ poll()!.totalVotes === 1 ? 'vote' : 'votes' }}
+          </span>
+        </p>
+      </div>
+
+    
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas #chartCanvas></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    
+      <div class="results-list">
+        @for (result of optionResults(); track $index) {
+          <mat-card class="result-item" [class.winner]="result.isWinner">
+            <mat-card-content>
+              <div class="result-header">
+                <span class="option-name">
+                  @if (result.isWinner) {
+                    <mat-icon class="winner-icon">emoji_events</mat-icon>
+                  }
+                  {{ result.option }}
+                </span>
+                <span class="vote-count">
+                  {{ result.count }} {{ result.count === 1 ? 'vote' : 'votes' }}
+                </span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" [style.width.%]="result.percentage"></div>
+              </div>
+              <p class="percentage-text">{{ result.percentage.toFixed(1) }}%</p>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        @if (optionResults().length === 0 || poll()!.totalVotes === 0) {
+          <div class="no-votes">
+            <mat-icon>poll</mat-icon>
+            <p>No votes yet. Be the first to vote!</p>
+          </div>
+        }
+      </div>
+
+      <mat-divider></mat-divider>
+
+    
+      <div class="share-section">
+        <h2 class="section-title">Share this poll</h2>
+
+        <div class="share-buttons">
+          <button mat-raised-button color="accent" (click)="onShareWhatsApp()" class="share-btn">
+            <mat-icon>chat</mat-icon>
+            WhatsApp
+          </button>
+
+          <button mat-raised-button (click)="onCopyLink()" class="share-btn">
+            <mat-icon>link</mat-icon>
+            Copy Link
+          </button>
+
+          <button mat-raised-button (click)="onShowQR()" class="share-btn">
+            <mat-icon>qr_code_2</mat-icon>
+            QR Code
+          </button>
+        </div>
+
+      
+        @if (showQR() && qrCodeUrl()) {
+          <mat-card class="qr-card">
+            <mat-card-content>
+              <h3>Scan to vote</h3>
+              <img [src]="qrCodeUrl()" alt="QR Code" class="qr-image" />
+              <button mat-stroked-button (click)="onDownloadQR()">
+                <mat-icon>download</mat-icon>
+                Download QR Code
+              </button>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+    
+      <button mat-raised-button color="primary" (click)="onCreateNew()" class="create-new-btn">
+        <mat-icon>add_circle</mat-icon>
+        Create New Poll
+      </button>
+    </div>
+  }
+</div>

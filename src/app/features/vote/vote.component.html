@@ -1,0 +1,119 @@
+<div class="vote-container">
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading poll...</p>
+    </div>
+  }
+
+
+  @else if (error()) {
+    <div class="error-container">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <h2>Oops!</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="onBack()">
+        <mat-icon>home</mat-icon>
+        Go Home
+      </button>
+    </div>
+  }
+
+
+  @else if (poll()) {
+  
+    <mat-toolbar color="primary" class="poll-toolbar">
+      <button mat-icon-button (click)="onBack()" aria-label="Go back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="toolbar-spacer"></span>
+      <button mat-icon-button (click)="onShare()" aria-label="Share poll">
+        <mat-icon>share</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onCopyLink()" aria-label="Copy link">
+        <mat-icon>link</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="poll-content">
+    
+      <div class="poll-header">
+        <h1 class="poll-title">{{ poll()!.title }}</h1>
+        <p class="poll-meta">
+          <span>Created {{ getRelativeTime(poll()!.createdAt) }}</span>
+          <span class="separator">•</span>
+          <span>{{ poll()!.totalVotes }} {{ poll()!.totalVotes === 1 ? 'vote' : 'votes' }}</span>
+        </p>
+      </div>
+
+    
+      <div class="options-container">
+        @for (option of poll()!.options; track $index) {
+          <mat-card
+            class="option-card"
+            [class.selected]="isOptionSelected($index)"
+            (click)="onOptionSelect($index)"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Option ' + ($index + 1) + ': ' + option"
+          >
+            <mat-card-content>
+              <div class="option-content">
+                @if (poll()!.settings.multipleChoice) {
+                  <mat-checkbox
+                    [checked]="isOptionSelected($index)"
+                    (change)="onOptionSelect($index)"
+                    (click)="$event.stopPropagation()"
+                  >
+                  </mat-checkbox>
+                } @else {
+                  <mat-radio-button
+                    [checked]="isOptionSelected($index)"
+                    [value]="$index"
+                    (change)="onOptionSelect($index)"
+                    (click)="$event.stopPropagation()"
+                  >
+                  </mat-radio-button>
+                }
+                <span class="option-text">{{ option }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+    
+      @if (error()) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ error() }}
+        </div>
+      }
+
+    
+      <button
+        mat-raised-button
+        color="primary"
+        class="submit-button"
+        [disabled]="!canSubmit || isVoting()"
+        (click)="onSubmitVote()"
+      >
+        @if (isVoting()) {
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Submitting...</span>
+        } @else {
+          <ng-container>
+            <mat-icon>how_to_vote</mat-icon>
+            <span>Submit Vote</span>
+          </ng-container>
+        }
+      </button>
+
+    
+      @if (poll()!.settings.multipleChoice) {
+        <p class="info-text">You can select multiple options</p>
+      }
+    </div>
+  }
+</div>

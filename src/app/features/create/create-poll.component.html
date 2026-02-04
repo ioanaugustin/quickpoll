@@ -1,0 +1,147 @@
+<div class="create-poll-container">
+  <div class="header">
+    <h1 class="logo">⚡ QuickPoll</h1>
+    <p class="tagline">Create a poll in seconds</p>
+  </div>
+
+  <mat-card class="poll-form-card">
+    <mat-card-content>
+      <form [formGroup]="pollForm" (ngSubmit)="onSubmit()">
+      
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Poll Question</mat-label>
+          <input
+            matInput
+            formControlName="title"
+            placeholder="What's your question?"
+            maxlength="200"
+          />
+          <mat-hint align="end">{{ pollForm.get('title')?.value?.length || 0 }}/200</mat-hint>
+          @if (pollForm.get('title')?.touched && pollForm.get('title')?.invalid) {
+            <mat-error>{{ getErrorMessage('title') }}</mat-error>
+          }
+        </mat-form-field>
+
+      
+        <div class="options-section">
+          <h3 class="section-title">Options</h3>
+
+          @for (option of options.controls; track $index) {
+            <div class="option-row">
+              <mat-form-field appearance="outline" class="option-input">
+                <mat-label>Option {{ $index + 1 }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="$any(option)"
+                  [placeholder]="'Enter option ' + ($index + 1)"
+                  maxlength="100"
+                />
+                @if (getOptionError($index)) {
+                  <mat-error>{{ getOptionError($index) }}</mat-error>
+                }
+              </mat-form-field>
+
+              @if (canRemoveOption) {
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="removeOption($index)"
+                  color="warn"
+                  class="remove-option-btn"
+                  [attr.aria-label]="'Remove option ' + ($index + 1)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+          }
+
+          @if (canAddOption) {
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="addOption()"
+              class="add-option-btn"
+            >
+              <mat-icon>add</mat-icon>
+              Add Option
+            </button>
+          }
+
+          @if (!canAddOption) {
+            <p class="hint-text">Maximum 10 options reached</p>
+          }
+        </div>
+
+      
+        <mat-expansion-panel class="settings-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>settings</mat-icon>
+              Advanced Settings
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="settings-content">
+            <mat-checkbox formControlName="multipleChoice">
+              Allow multiple choices
+            </mat-checkbox>
+
+            <div class="radio-group">
+              <label class="radio-label">Show results:</label>
+              <mat-radio-group formControlName="showResults">
+                <mat-radio-button value="after_vote">After voting</mat-radio-button>
+                <mat-radio-button value="live">Live results</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+      
+        @if (error()) {
+          <div class="error-message">
+            <mat-icon>error</mat-icon>
+            {{ error() }}
+          </div>
+        }
+
+      
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="create-button"
+          [disabled]="isLoading() || pollForm.invalid"
+        >
+          @if (isLoading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Creating...</span>
+          } @else {
+            <ng-container>
+              <mat-icon>check_circle</mat-icon>
+              <span>Create Poll</span>
+            </ng-container>
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+
+  <div class="templates-section">
+    <h3 class="section-title">Quick Templates</h3>
+    <div class="templates-grid">
+      @for (template of templates; track template.name) {
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="applyTemplate(template)"
+          class="template-chip"
+        >
+          <span class="template-icon">{{ template.icon }}</span>
+          <span>{{ template.name }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>
