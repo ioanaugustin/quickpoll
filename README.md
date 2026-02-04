@@ -1,59 +1,87 @@
-# Quickpoll
+# QuickPoll
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Fast group decision polling app with real-time results and social media link previews.
 
-## Development server
+## 🚀 Quick Links
 
-To start a local development server, run:
+- **[📖 Product Vision](docs/PRODUCT.md)** - Strategy, features & distribution plan
+- **[✅ Progress Tracker](docs/steps.md)** - Phase 0 complete checklist
+- **[🛠️ Technical Roadmap](docs/ROADMAP.md)** - Full implementation guide
+- **[🔗 Live Cloud Function](https://us-central1-quickpoll-app-f3fed.cloudfunctions.net/linkPreview/test123)** - Test link preview
+
+## 📦 Tech Stack
+
+- **Frontend:** Angular 21.1 + Material Design
+- **Backend:** Firebase (Firestore, Cloud Functions, Hosting)
+- **Real-time:** Firestore subscriptions
+- **PWA:** Service Worker enabled
+- **Link Previews:** Express Cloud Function with Open Graph
+
+## 🎯 Current Status
+
+**Phase 0: Infrastructure Setup** ✅ **COMPLETE & DEPLOYED**
+- ✅ Firebase configured and deployed
+- ✅ Angular app deployed to hosting
+- ✅ Link preview function with bot detection
+- ✅ Open Graph meta tags working (verified on Facebook)
+- ✅ PWA support enabled
+- ✅ OG image accessible
+
+**Phase 1-4: App Development** 🔜 **NEXT**
+- See [ROADMAP.md](docs/ROADMAP.md) for detailed plan
+
+## 🔧 Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Run dev server
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+# Build for production
 ng build
+
+# Deploy to Firebase
+firebase deploy
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📁 Project Structure
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```
+quickpoll/
+├── src/
+│   ├── app/              # Angular application
+│   ├── assets/           # Static assets (OG image)
+│   └── environments/     # Firebase config
+├── functions/            # Cloud Functions
+│   └── src/
+│       └── index.ts      # Link preview function
+├── docs/                 # Documentation
+│   ├── steps.md         # Progress tracker
+│   └── ROADMAP.md       # Full development guide
+├── firebase.json         # Firebase configuration
+└── package.json
 ```
 
-## Running end-to-end tests
+## 📖 Documentation
 
-For end-to-end (e2e) testing, run:
+All documentation is in the [`docs/`](docs/) folder:
 
-```bash
-ng e2e
-```
+- **[PRODUCT.md](docs/PRODUCT.md)** - Product vision, strategy & distribution
+- **[steps.md](docs/steps.md)** - Quick progress tracker (Phase 0 ✅)
+- **[ROADMAP.md](docs/ROADMAP.md)** - Technical implementation guide
+- **[docs/README.md](docs/README.md)** - Documentation index
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**New to the project?** Start with [PRODUCT.md](docs/PRODUCT.md) to understand the vision.
 
-## Additional Resources
+## 🔗 Key URLs
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Live App:** https://quickpoll-app-f3fed.web.app
+- **Repository:** https://github.com/ioanaugustin/quickpoll
+- **Firebase Project:** quickpoll-app-f3fed
+- **Cloud Function:** https://us-central1-quickpoll-app-f3fed.cloudfunctions.net/linkPreview
+
+## 📝 License
+
+Private project

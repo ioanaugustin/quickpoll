@@ -62,6 +62,17 @@ app.get('/:pollId', async (req: Request, res: Response) => {
     const pollUrl = `${appUrl}/poll/${pollId}`;
     const ogImageUrl = `${appUrl}/assets/og-default.png`;
 
+    // Detect if request is from a bot/crawler
+    const userAgent = req.get('user-agent') || '';
+    const isBot = /bot|crawler|spider|crawling|facebook|whatsapp|twitter|slack|discord/i.test(userAgent);
+
+    // For bots: show only meta tags (no redirect)
+    // For humans: show meta tags + redirect
+    const redirectMeta = isBot ? '' : `
+  <!-- Immediate redirect to Angular app (only for humans) -->
+  <meta http-equiv="refresh" content="0;url=${pollUrl}">
+  <script>window.location.replace('${pollUrl}');</script>`;
+
     // Serve HTML with Open Graph tags
     res.status(200).send(`
 <!DOCTYPE html>
@@ -88,10 +99,7 @@ app.get('/:pollId', async (req: Request, res: Response) => {
   <meta property="twitter:title" content="${safeTitle}">
   <meta property="twitter:description" content="${safeDescription}">
   <meta property="twitter:image" content="${ogImageUrl}">
-
-  <!-- Immediate redirect to Angular app -->
-  <meta http-equiv="refresh" content="0;url=${pollUrl}">
-  <script>window.location.replace('${pollUrl}');</script>
+  ${redirectMeta}
 
   <style>
     body {
@@ -151,9 +159,8 @@ function getAppUrl(req: Request): string {
     return 'http://localhost:4200';
   }
 
-  // Replace with YOUR actual Firebase hosting URL after first deploy
-  // You'll get this URL after running: firebase deploy --only hosting
-  return `https://${req.get('host')}`;
+  // Firebase Hosting URL (deployed on Feb 4, 2026)
+  return 'https://quickpoll-app-f3fed.web.app';
 }
 
 /**
