@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
     "public": "dist/quickpoll/browser",
     "ignore": [
@@ -37,8 +40,9 @@
       }
     ]
   },
-  "functions": {
+  "functions": [{
     "source": "functions",
+    "codebase": "default",
     "runtime": "nodejs20"
-  }
+  }]
 }

@@ -1,0 +1,68 @@
+rules_version = '2';
+
+/**
+ * QuickPoll Firestore Security Rules
+ *
+ * Security model:
+ * - Polls: Anyone can read, authenticated users can create, polls are immutable
+ * - Votes: One vote per user per poll, uses voterId as document ID
+ * - Results: Read-only for everyone, only Cloud Functions can write
+ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(createdBy) {
+      return request.auth.uid == createdBy;
+    }
+
+    // Polls collection
+    match /polls/{pollId} {
+      // Anyone can read polls
+      allow read: if true;
+
+      // Authenticated users can create polls
+      // Must set createdBy to their own UID
+      allow create: if isAuthenticated()
+                    && request.resource.data.createdBy == request.auth.uid
+                    && request.resource.data.id == pollId
+                    && request.resource.data.totalVotes == 0;
+
+      // Polls are immutable - no updates or deletes allowed
+      // This prevents poll manipulation after votes are cast
+      allow update, delete: if false;
+    }
+
+    // Votes subcollection
+    match /votes/{pollId}/votes/{voteId} {
+      // Users can read votes for a specific poll
+      allow read: if resource.data.pollId == pollId;
+
+      // Authenticated users can vote once per poll
+      // The voteId MUST be their auth.uid to prevent duplicates
+      allow create: if isAuthenticated()
+                    && voteId == request.auth.uid
+                    && request.resource.data.voterId == request.auth.uid
+                    && request.resource.data.pollId == pollId
+                    && !exists(/databases/$(database)/documents/votes/$(pollId)/votes/$(request.auth.uid));
+
+      // No updates or deletes - votes are permanent
+      allow update, delete: if false;
+    }
+
+    // Results collection (aggregated vote counts)
+    match /results/{pollId} {
+      // Anyone can read results
+      allow read: if true;
+
+      // Only Cloud Functions can write results
+      // Client apps have no write access
+      allow write: if false;
+    }
+  }
+}
