@@ -14,12 +14,12 @@ You've successfully installed Angular Fire and Firebase. Here's the complete rem
 - [x] Step 7: Test Angular App ✅
 - [x] Step 8: Initialize Firebase CLI ✅
 - [x] Step 9: Link Project to Firebase ✅
-- [ ] **Step 10: Install Express in Functions** ⬅️ NEXT
-- [ ] Step 11: Write Link Preview Function
-- [ ] Step 12: Configure Firebase Hosting
-- [ ] Step 13: Create Default OG Image
-- [ ] Step 14: Build and Deploy Functions
-- [ ] Step 15: Create Test Poll
+- [x] Step 10: Install Express in Functions ✅
+- [x] Step 11: Write Link Preview Function ✅
+- [x] Step 12: Configure Firebase Hosting ✅
+- [x] Step 13: Create Default OG Image ✅
+- [x] Step 14: Build and Deploy Functions ✅
+- [ ] **Step 15: Create Test Poll** ⬅️ MANUAL ACTION REQUIRED
 - [ ] Step 16: Test Cloud Function
 - [ ] Step 17: Update Firestore Rules
 
